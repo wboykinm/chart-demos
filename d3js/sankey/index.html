@@ -75,7 +75,7 @@ d3.json("lifecycle.json", function(lifecycle) {
       .sort(function(a, b) { return b.dy - a.dy; });
 
   link.append("title")
-      .text(function(d) { return d.source.name + " → " + d.target.name + "\n" + format(d.value); });
+      .text(function(d) { return d.source.name + " → " + d.target.name + "\n" + d.value + "%" });
 
   var node = svg.append("g").selectAll(".node")
       .data(lifecycle.nodes)
@@ -86,8 +86,13 @@ d3.json("lifecycle.json", function(lifecycle) {
   node.append("rect")
       .attr("height", function(d) { return d.dy; })
       .attr("width", sankey.nodeWidth())
-      .style("fill", function(d) { return d.color = "#77C4D3" })
-      .style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
+      .style("fill", function(d) { 
+        if (d.id == 1) {return "#CD6660" } // 1 = Drop Out
+        if (d.id == 5) {return "#6095C9"} // 5 = Success
+        if (d.id == 0) {return "#e2e3e3"} // 0 = Starting point  
+        else    { return "#FFFC00" } // All transitional phases
+      })
+      .style("stroke", "#777")
     .append("title")
       .text(function(d) { return d.name + "\n" + format(d.value); });
 
