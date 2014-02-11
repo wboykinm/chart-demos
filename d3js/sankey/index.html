@@ -16,11 +16,12 @@
   pointer-events: none;
   text-shadow: 0 0px 4px #fff;
   font-family: 'Russo One', sans-serif;
+  font-size: 2em;
 }
 
 .link {
   fill: none;
-  stroke: #333745;
+  stroke: #000;
   stroke-opacity: .2;
 }
 
@@ -88,7 +89,7 @@ d3.json("lifecycle.json", function(lifecycle) {
       .attr("width", sankey.nodeWidth())
       .style("fill", function(d) { 
         if (d.id == 1) {return "#CD6660" } // 1 = Drop Out
-        if (d.id == 5) {return "#6095C9"} // 5 = Success
+        if (d.id == 3) {return "#6095C9"} // 3 = Success
         if (d.id == 0) {return "#e2e3e3"} // 0 = Starting point  
         else    { return "#FFFC00" } // All transitional phases
       })

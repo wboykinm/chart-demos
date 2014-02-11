@@ -3,23 +3,12 @@
 {"name":"All","id":0},
 {"name":"Drop Out","id":1},
 {"name":"Audit","id":2},
-{"name":"Audit","id":3},
-{"name":"Measure","id":4},
-{"name":"Success","id":5},
-{"name":"Audit & Measure Same Day","id":6},
-{"name":"Measure","id":7}
-
+{"name":"Measure + Success","id":3}
 ],
 "links":[
-{"source":0,"target":1,"value":4,"relation":"All - drop out"},
-{"source":0,"target":2,"value":83,"relation":"All - Audit"},
-{"source":2,"target":1,"value":50,"relation":"Audit - drop out"},
-{"source":2,"target":4,"value":33,"relation":"Audit - Measure"},
-{"source":0,"target":4,"value":7,"relation":"All - Measure"},
-{"source":0,"target":7,"value":2,"relation":"All - Measure"},
-{"source":7,"target":3,"value":2,"relation":"Measure - Audit"},
-{"source":4,"target":5,"value":40,"relation":"Measure - Success"},
-{"source":0,"target":6,"value":4,"relation":"All - A&M"},
-{"source":6,"target":5,"value":4,"relation":"A&M - Success"},
-{"source":3,"target":5,"value":2,"relation":"Audit - Success"}
+{"source":0,"target":1,"value":4,"relation":"All - Drop out"},
+{"source":0,"target":2,"value":87,"relation":"All - Audit"},
+{"source":0,"target":3,"value":9,"relation":"All - Measure"},
+{"source":2,"target":1,"value":50,"relation":"Audit - Drop Out"},
+{"source":2,"target":3,"value":37,"relation":"Audit - Measure"}
 ]}
