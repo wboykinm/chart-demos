@@ -3,6 +3,7 @@
 <meta charset="utf-8">
 <meta name='viewport' content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no' />
 <title>Sankey Demo </title>
+<link href='http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.0-rc2/css/bootstrap.css' rel='stylesheet' type='text/css'>
 <link href='http://fonts.googleapis.com/css?family=Russo+One' rel='stylesheet' type='text/css'>
 <style>
 
@@ -34,8 +35,9 @@
 <body>
 
 <div id="chart"></div>
-
+<script src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.js'></script>
 <script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.0.0-rc2/js/bootstrap.js"></script>
 <script src="sankey.js"></script>
 <script>
 
@@ -54,8 +56,8 @@ var svg = d3.select("#chart").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var sankey = d3.sankey()
-    .nodeWidth(40)
-    .nodePadding(20)
+    .nodeWidth(80)
+    .nodePadding(30)
     .size([width, height]);
 
 var path = sankey.link();
@@ -90,7 +92,7 @@ d3.json("lifecycle.json", function(lifecycle) {
       .style("fill", function(d) { 
         if (d.id == 1) {return "#CD6660" } // 1 = Drop Out
         if (d.id == 3) {return "#6095C9"} // 3 = Success
-        if (d.id == 0) {return "#e2e3e3"} // 0 = Starting point  
+        if (d.id == 0) {return "#e9e9e9"} // 0 = Starting point  
         else    { return "#FFFC00" } // All transitional phases
       })
       .style("stroke", "#777")
@@ -110,6 +112,14 @@ d3.json("lifecycle.json", function(lifecycle) {
       .attr("text-anchor", "start");
 
 });
+// Attempt to attach tooltip
+$(document).ready(function () {
+    $("svg.link").tooltip({
+        'container': 'body',
+        'placement': 'right'
+    });
+  });
+
 
 </script>
 </body>
