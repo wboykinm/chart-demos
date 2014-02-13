@@ -6,8 +6,8 @@
 ],
 "links":[
 {"source":0,"target":1,"value":4,"relation":"All - Drop out"},
-{"source":0,"target":2,"value":86,"relation":"All - Audit"},
-{"source":0,"target":3,"value":10,"relation":"All - Success"},
-{"source":2,"target":1,"value":43,"relation":"Audit - Drop Out"},
-{"source":2,"target":3,"value":43,"relation":"Audit - Success"}
+{"source":0,"target":2,"value":90,"relation":"All - Audit"},
+{"source":0,"target":3,"value":6,"relation":"All - Success"},
+{"source":2,"target":1,"value":49,"relation":"Audit - Drop Out"},
+{"source":2,"target":3,"value":41,"relation":"Audit - Success"}
 ]}
