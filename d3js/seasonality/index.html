@@ -8,10 +8,10 @@ body {
   margin: auto;
   position: relative;
 }
-
 svg {
   font: 15px 'Source Sans Pro', sans-serif;
 }
+
 
 .axis path,
 .axis line {
@@ -24,7 +24,7 @@ svg {
   display: none;
 }
 
-.years {
+.cities {
   fill: none;
   stroke: #aaa;
   stroke-linejoin: round;
@@ -32,7 +32,7 @@ svg {
   stroke-width: 1.5px;
 }
 
-.year--hover {
+.city--hover {
   stroke: #000;
 }
 
@@ -59,13 +59,14 @@ svg {
 
 </style>
 <label id="form" for="show-voronoi">
-  <input type="checkbox" id="show-voronoi" disabled >
+  Show Voronoi
+  <input type="checkbox" id="show-voronoi" disabled>
 </label>
-<script src="http://d3js.org/d3.v3.js"></script>
+<script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
 var months,
-    monthFormat = d3.time.format("%m");
+    monthFormat = d3.time.format("%Y-%m");
 
 var margin = {top: 20, right: 30, bottom: 30, left: 40},
     width = 960 - margin.left - margin.right,
@@ -94,10 +95,9 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.tsv("veic.tsv", type, function(error, years) {
+d3.tsv("veic2.tsv", type, function(error, cities) {
   x.domain(d3.extent(months));
-  console.log(d3.extent(months));
-  y.domain([0, d3.max(years, function(c) { return d3.max(c.values, function(d) { return d.value; }); })]).nice();
+  y.domain([0, d3.max(cities, function(c) { return d3.max(c.values, function(d) { return d.value; }); })]).nice();
 
   svg.append("g")
       .attr("class", "axis axis--x")
@@ -119,9 +119,9 @@ d3.tsv("veic.tsv", type, function(error, years) {
       .text("Successful Projects");
 
   svg.append("g")
-      .attr("class", "years")
+      .attr("class", "cities")
     .selectAll("path")
-      .data(years)
+      .data(cities)
     .enter().append("path")
       .attr("d", function(d) { d.line = this; return line(d.values); });
 
@@ -142,7 +142,7 @@ d3.tsv("veic.tsv", type, function(error, years) {
       .data(voronoi(d3.nest()
           .key(function(d) { return x(d.date) + "," + y(d.value); })
           .rollup(function(v) { return v[0]; })
-          .entries(d3.merge(years.map(function(d) { return d.values; })))
+          .entries(d3.merge(cities.map(function(d) { return d.values; })))
           .map(function(d) { return d.values; })))
     .enter().append("path")
       .attr("d", function(d) { return "M" + d.join("L") + "Z"; })
@@ -155,32 +155,32 @@ d3.tsv("veic.tsv", type, function(error, years) {
       .on("change", function() { voronoiGroup.classed("voronoi--show", this.checked); });
 
   function mouseover(d) {
-    d3.select(d.year.line).classed("year--hover", true);
-    d.year.line.parentNode.appendChild(d.year.line);
+    d3.select(d.city.line).classed("city--hover", true);
+    d.city.line.parentNode.appendChild(d.city.line);
     focus.attr("transform", "translate(" + x(d.date) + "," + y(d.value) + ")");
-    focus.select("text").text(d.year.month);
+    focus.select("text").text(d.city.year);
   }
 
   function mouseout(d) {
-    d3.select(d.year.line).classed("year--hover", false);
+    d3.select(d.city.line).classed("city--hover", false);
     focus.attr("transform", "translate(-100,-100)");
   }
 });
 
 function type(d, i) {
   if (!i) months = Object.keys(d).map(monthFormat.parse).filter(Number);
-  var year = {
-    name: d.month,
+  var city = {
+    year: d.year.replace(/ (msa|necta div|met necta|met div)$/i, ""),
     values: null
   };
-  year.values = months.map(function(m) {
+  city.values = months.map(function(m) {
     return {
-      year: year,
+      city: city,
       date: m,
-      value: d[monthFormat(m)]
+      value: d[monthFormat(m)] / 1
     };
   });
-  return year;
+  return city;
 }
 
 </script>
