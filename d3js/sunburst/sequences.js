@@ -10,12 +10,12 @@ var b = {
 
 // Mapping of step names to colors.
 var colors = {
-  "pool": "#5687d1",
-  "audit": "#7b615c",
-  "dropout": "#de783b",
-  "audit+win": "#6ab975",
-  "success": "#a173d1",
-  "complete": "#bbbbbb"
+  "pool": "#e9d362",
+  "audit": "#bdc277",
+  "dropout": "#99af7d",
+  "audit+win": "#7d9b7a",
+  "success": "#658672",
+  "complete": "#537165"
 };
 
 // Total size of all segments; we set this later, after loading the data.
