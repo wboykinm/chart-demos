@@ -26,14 +26,15 @@ svg {
 
 .cities {
   fill: none;
-  stroke: #aaa;
+  stroke: #9bd2ce;
   stroke-linejoin: round;
   stroke-linecap: round;
   stroke-width: 1.5px;
 }
 
 .city--hover {
-  stroke: #000;
+  stroke: #49ada6;
+  stroke-width:4px;
 }
 
 .focus text {
@@ -59,7 +60,7 @@ svg {
 
 </style>
 <label id="form" for="show-voronoi">
-  <input type="checkbox" id="show-voronoi" disabled>
+  <input type="checkbox" id="show-voronoi" style="display:none;" disabled>
 </label>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
@@ -86,7 +87,8 @@ var voronoi = d3.geom.voronoi()
 
 var line = d3.svg.line()
     .x(function(d) { return x(d.date); })
-    .y(function(d) { return y(d.value); });
+    .y(function(d) { return y(d.value); })
+    .interpolate('monotone');
 
 var svg = d3.select("body").append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -115,6 +117,7 @@ d3.tsv("veic2.tsv", type, function(error, cities) {
       .attr("x", 4)
       .attr("dy", ".32em")
       .style("font-weight", "bold")
+      .style("font-size", "24px")
       .text("Successful Projects");
 
   svg.append("g")
