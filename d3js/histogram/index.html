@@ -52,11 +52,13 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-d3.csv("data.csv", type, function(error, data) {
-  x.domain(data.map(function(d) { return d.yearbin; }));
-  y.domain([0, d3.max(data, function(d) { return d.count; })]);
+d3.json("data.json", type, function(error, json) {
+  data = json.census_household_income;
+  console.log(json)
+  x.domain(data(function(d) { return d.max; }));
+  y.domain([0, d3.max(data, function(d) { return d.freq; })]);
 
-  var fullSet = data.map(function(d) { return d.yearbin; });
+  var fullSet = data.map(function(d) { return d.max; });
  
   xAxis.tickValues([fullSet[1], fullSet[7], fullSet[13], fullSet[19]]);
 
@@ -69,14 +71,14 @@ d3.csv("data.csv", type, function(error, data) {
       .data(data)
     .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", function(d) { return x(d.yearbin); })
+      .attr("x", function(d) { return x(d.max); })
       .attr("width", x.rangeBand())
-      .attr("y", function(d) { return y(d.count); })
-      .attr("height", function(d) { return height - y(d.count); });
+      .attr("y", function(d) { return y(d.freq); })
+      .attr("height", function(d) { return height - y(d.freq); });
 });
 
 function type(d) {
-  d.count = +d.count;
+  d.freq = +d.freq;
   return d;
 }
 
