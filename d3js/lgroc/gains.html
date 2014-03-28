@@ -36,13 +36,19 @@
         stroke-width: 3;
       }
 
+      .brush .extent {
+        stroke: #0044ff;
+        fill-opacity: .125;
+        shape-rendering: crispEdges;
+      }
+
     </style>
   </head>
   <body>
     <script>
       var margin = {top: 20, right: 10, bottom: 50, left: 50},
           width = 600 - margin.left - margin.right,
-          height = 400 - margin.top - margin.bottom;
+          height = 350 - margin.top - margin.bottom;
 
       var x = d3.scale.linear()
           .domain([0,100])
@@ -68,14 +74,16 @@
           .append("g")
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+        // Define as area here
+
         var line = d3.svg.line()
             .x(function(d) { return x(d.customers); })
             .y(function(d) { return y(d.gains); });
 
-        svg.append("path")
+        /*svg.append("path")
           .datum([{customers: 0, gains: 0}, {customers: 100, gains: 100}])
           .attr("class", "baseline")
-          .attr("d", line);
+          .attr("d", line);*/
 
         svg.append("g")
             .attr("class", "x axis")
@@ -102,25 +110,11 @@
           .attr("class", "gains")
           .attr("d", line);
 
-        svg.selectAll(".dot")
-            .data(data)
-          .enter()
-            .append("circle")
-              .attr("class", "dot")
-              .attr("r", 3.5)
-              .attr("cx", function(d) { return x(d.customers); })
-              .attr("cy", function(d) { return y(d.gains); })
-
-        svg.selectAll(".label")
-            .data(data)
-          .enter()
-            .append("text")
-              .attr("class", "label")
-              .attr("x", function(d) { return x(d.customers); })
-              .attr('dx', 5)
-              .attr("y", function(d) { return y(d.gains); })
-              .attr('dy', -5)
-              .text(function(d) { return Math.round(d.min_score * 10) / 10 })
+        svg.append("g")
+          .attr("class", "brush")
+          .call(d3.svg.brush()
+            .x(x)
+          );
 
       });
       function type(d) {
