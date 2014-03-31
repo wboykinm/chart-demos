@@ -86,6 +86,8 @@
 
       var svg = d3.select("body").append("svg").attr("id","gains");
 
+      // This will require input in the form of a table with 2 columns:
+      // "Gains" (score gain) and "Customers" (# of customers needed to get there)
       d3.csv("gains.csv", type, function(error, data) {
         y.domain([100,0])
 
@@ -155,7 +157,7 @@
 
         // Add a counter for % selected
         brushg.selectAll(".resize.e").append('text')
-          .attr("dx", "1em")
+          .attr("dx", "0.6em")
           .attr("dy", "42%")
           .style("font-size","36px;")
           .attr('class', 'count')
@@ -181,9 +183,9 @@
       }
 
       function brushed() {
-        console.log(brush.extent());
         d3.select('text.count')
           .text(Math.round(brush.extent()[1]) + '%');
+        //This would be a good spot to hand off the extent
       }
 
       function type(d) {
