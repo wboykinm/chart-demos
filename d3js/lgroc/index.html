@@ -1,0 +1,182 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Model Magnitude Selector</title>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet" type="text/css">
+    <style>
+      body, svg {
+        font-family: "Source Sans Pro", sans-serif;
+        font-weight: 300;
+      }
+
+      svg text {
+        font-size: 11px;
+      }
+
+      path.gains {
+        fill: #49ada6;
+        stroke: #9bd2ce;
+        stroke-width: 1px;
+        fill-opacity: .75;
+      }
+
+      path.baseline {
+        fill: none;
+        stroke: #333333;
+        stroke-width: 3;
+      }
+
+      .axis {
+        shape-rendering: crispEdges;
+      }
+
+      path.domain {
+        stroke: gray;
+        fill: none;
+        stroke-width: 1;
+      }
+
+      .brush .extent {
+        stroke: #777;
+        fill:#e9d362;
+        fill-opacity: .325;
+        shape-rendering: crispEdges;
+      }
+
+      .brush .resize path {
+        fill: #eee;
+        stroke: #666;
+      }
+
+      .brush .resize.w {
+        pointer-events:none;
+        display: none;
+      }
+
+    </style>
+  </head>
+  <body>
+    <script>
+      var margin = {top: 20, right: 50, bottom: 50, left: 10},
+          width = 600 - margin.left - margin.right,
+          height = 350 - margin.top - margin.bottom;
+
+      var x = d3.scale.linear()
+          .domain([0,100])
+          .range([0, width]);
+      var y = d3.scale.linear()
+          .range([0, height]);
+
+      var brush = d3.svg.brush()
+        .x(x)
+        .extent([0, 1])
+        .on("brush", brushed);
+
+      var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom");
+
+      var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("right");
+
+      var svg = d3.select("body").append("svg").attr("id","gains");
+
+      d3.csv("gains.csv", type, function(error, data) {
+        y.domain([100,0])
+
+        svg = d3.select("#gains")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+          .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        // Define the area
+        var area = d3.svg.area()            
+          .x(function(d) { return x(d.customers); })  
+          .y0(height)               
+          .y1(function(d) { return y(d.gains); })
+          .interpolate("basis");
+
+        // define the line (just for baseline)
+        var line = d3.svg.line()
+            .x(function(d) { return x(d.customers); })
+            .y(function(d) { return y(d.gains); });
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+          .append("text")
+            .attr("x", width / 2)
+            .attr("y", 30)
+            .style("text-anchor", "middle")
+            .text("Cumulative % of customers");
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .attr("transform", "translate(" + width + ",0)")
+            .call(yAxis)
+          .append("text")
+            .attr("y", 30)
+            .attr("x", -width / 2)
+            .attr("transform", "rotate(-90)")
+            .style("text-anchor", "top")
+            .text("Cumulative gains");
+
+        svg.append("path")
+          .datum(data)
+          .attr("class", "gains")
+          .attr("d", area);
+
+        svg.append("path")
+          .datum([{customers: 0, gains: 0}, {customers: 100, gains: 100}])
+          .attr("class", "baseline")
+          .attr("d", line);
+
+        var brushg = svg.append("g")
+          .attr("class", "brush")
+          .call(brush);
+        brushg.selectAll("rect")
+          .style("pointer-events","none")
+          .attr("y", -6)
+          .attr("height", height + 7);
+        brushg.selectAll(".resize.e")
+          .append("path")
+            .attr("d", resizePath);
+        // Set just the eastern extent to movable
+        //brushg.selectAll("#resizer")
+          //.attr("style", "pointer-events:none");
+      });
+      
+      // Build a crazy svg handle thing
+        function resizePath(d) {
+          console.log()
+          var e = +(d == "e"),
+              x = e ? 1 : -1,
+              y = height / 3;
+          return "M" + (.5 * x) + "," + y
+              + "A6,6 0 0 " + e + " " + (8.5 * x) + "," + (y + 6)
+              + "V" + (2 * y - 6)
+              + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y)
+              + "Z"
+            + "M" + (2.5 * x) + "," + (y + 8)
+            + "V" + (2 * y - 8)
+            + "M" + (4.5 * x) + "," + (y + 8)
+            + "V" + (2 * y - 8);
+      }
+
+      function brushed() {
+        console.log('some stuff');
+        /*x.domain(brush.empty() ? x2.domain() : brush.extent());
+        focus.select(".area").attr("d", area);
+        focus.select(".x.axis").call(xAxis);*/
+      }
+      function type(d) {
+        d.value = +d.value; // coerce to number
+        return d;
+      }
+    </script>
+  </body>

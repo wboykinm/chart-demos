@@ -1,4 +1,4 @@
-<!doctype html>
+o<!doctype html>
 <html>
   <head>
     <title>Model Magnitude Selector</title>
@@ -76,9 +76,16 @@
 
         // Define as area here
 
-        var line = d3.svg.line()
+        /*var line = d3.svg.line()
             .x(function(d) { return x(d.customers); })
-            .y(function(d) { return y(d.gains); });
+            .y(function(d) { return y(d.gains); });*/
+
+        // Define the area (remove the line definition)
+        var area = d3.svg.area()            // added
+          .x(function(d) { return x(d.customers); })   // added
+          .y0(height)                 // added
+          .y1(function(d) { return y(d.gains); });  // added
+
 
         /*svg.append("path")
           .datum([{customers: 0, gains: 0}, {customers: 100, gains: 100}])
@@ -108,7 +115,7 @@
         svg.append("path")
           .datum(data)
           .attr("class", "gains")
-          .attr("d", line);
+          .attr("d", area);
 
         svg.append("g")
           .attr("class", "brush")

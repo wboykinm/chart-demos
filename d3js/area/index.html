@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet" type="text/css">
+
 <style> /* set the CSS */
 
-body { font: 12px Arial;}
+body { 
+	font-family: "Source Sans Pro", sans-serif;
+	font-weight: 300;
+}
 
 .axis path,
 .axis line {
@@ -18,8 +23,8 @@ body { font: 12px Arial;}
 }
 
 .brush .extent {
-  stroke: #000;
-  fill-opacity: .125;
+  stroke: #ffffff;
+  fill-opacity: .325;
   shape-rendering: crispEdges;
 }
 
@@ -27,6 +32,7 @@ body { font: 12px Arial;}
 <body>
 
 <!-- load the d3.js library -->	
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 <script src="http://d3js.org/d3.v3.js"></script>
 
 <script>
