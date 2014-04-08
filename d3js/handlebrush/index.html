@@ -2,25 +2,34 @@
 <meta charset="utf-8">
 <style>
 
+#selectContainer {
+  width: 600px;
+  height: 450px;
+  position: absolute;
+  top:20px;
+  left:20px;
+}
+
 .grid-background {
-  fill: #e2e3e3;
+  fill: #fff;
 }
 
 .brush .extent {
-  fill:#3300ff;
+  fill:#e9d362;
   fill-opacity: .125;
   shape-rendering: crispEdges;
 }
 
 </style>
 <body>
+  <div id="selectContainer"></div>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var margin = {top: 20, right: 40, bottom: 20, left: 40},
-    width = 500 - margin.left - margin.right,
+var margin = {top: 15, right: 15, bottom: 15, left: 15},
+    width = 400 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
-    radius = Math.min(width, height) / 2;
+    radius = Math.min(width, height) / 1.8;
 
 //brush stuff:
 var x = d3.scale.linear()
@@ -29,12 +38,13 @@ var x = d3.scale.linear()
 
 var brush = d3.svg.brush()
     .x(x)
-    .extent([0, 40])
+    .extent([0, 10])
     .on("brush", brushend);
 
-var svg = d3.select("body").append("svg")
+var svg = d3.select("#selectContainer").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
+    .attr('class','brushControl')
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -67,11 +77,12 @@ gBrush.selectAll(".resize.e")
   .append("image")
     .attr("width", 35)
     .attr("height", 35)
-    .attr("y", height/2.1)
-    .attr("x", -17)
+    .attr("y", height/1.1)
+    .attr("x", -18)
     .attr("xlink:href", "arrow_right.png");
 
-var color = d3.scale.category20();
+var color = d3.scale.ordinal()
+    .range(['#e9d362','#f0f1f1']);
 
 var pie = d3.layout.pie()
     .sort(null);
@@ -80,11 +91,11 @@ var arc = d3.svg.arc()
     .innerRadius(radius - 100)
     .outerRadius(radius - 60);
 
-var svg = d3.select("body").append("svg")
-    .attr("width", width)
-    .attr("height", height)
+var svg = d3.select(".brushControl").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
   .append("g")
-    .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+    .attr("transform", "translate(" + width / 1.85 + "," + height / 1.9 + ")");
 
 var path = svg.selectAll("path")
     .data(pie([brush.extent()[1], 100 - brush.extent()[1]]))
