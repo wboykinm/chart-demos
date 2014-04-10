@@ -13,14 +13,6 @@ body {
   shape-rendering: crispEdges;
 }
 
-.bar {
-  fill: steelblue;
-}
-
-.x.axis path {
-  display: none;
-}
-
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -57,7 +49,24 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 // Pull in data
-d3.csv("data.csv", function(error, data) {
+var data = [
+    {
+      "Test":"Precision",
+      "Your Hypothesis":0.4499890,
+      "Random":0.2704659
+    },
+    {
+      "Test":"Recall",
+      "Your Hypothesis":0.3277946,
+      "Random":0.2027307
+    },
+    {
+      "Test":"F1",
+      "Your Hypothesis":0.2141490,
+      "Random":0.1208495
+    }
+  ]
+
   var regimes = d3.keys(data[0]).filter(function(key) { return key !== "Test"; });
 
   data.forEach(function(d) {
@@ -111,7 +120,5 @@ d3.csv("data.csv", function(error, data) {
       .attr("dy", ".35em")
       .style("text-anchor", "end")
       .text(function(d) { return d; });
-
-});
 
 </script>

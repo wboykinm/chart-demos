@@ -16,7 +16,7 @@
       }
 
       path.gains {
-        fill: #49ada6;
+        fill: #e9d362;
         stroke: #9bd2ce;
         stroke-width: 1px;
         fill-opacity: 0.7;
@@ -25,7 +25,7 @@
       path.baseline {
         fill: none;
         stroke: #333333;
-        stroke-width: 3;
+        stroke-width: 2;
       }
 
       .axis {
@@ -41,7 +41,7 @@
       .brush .extent {
         stroke: #777;
         fill:#e9d362;
-        fill-opacity: .425;
+        fill-opacity: 0;
         shape-rendering: crispEdges;
       }
 
@@ -60,6 +60,7 @@
     </style>
   </head>
   <body>
+    <script src="mask.js" charset="utf-8"></script>
     <script>
       var margin = {top: 20, right: 50, bottom: 50, left: 10},
           width = 600 - margin.left - margin.right,
@@ -73,7 +74,7 @@
 
       var brush = d3.svg.brush()
         .x(x)
-        .extent([0, 1])
+        .extent([0, 15])
         .on("brush", brushed);
 
       var xAxis = d3.svg.axis()
@@ -84,7 +85,12 @@
           .scale(y)
           .orient("right");
 
-      var svg = d3.select("body").append("svg").attr("id","gains");
+      var svg = d3.select("body")
+        .append("svg")
+          .attr("id","gains");
+
+      // Adding mask
+        var mask;
 
       // This will require input in the form of a table with 2 columns:
       // "Gains" (score gain) and "Customers" (# of customers needed to get there)
@@ -139,6 +145,19 @@
           .attr("class", "gains")
           .attr("d", area);
 
+        mask = new SVGMask(svg)
+          .x(x)
+          .y(y)
+          .style("fill","#fff")
+          .reveal([0,15]);
+
+        svg.append("path")
+          .datum(data)
+          .attr("class", "gains")
+          .style("fill","#f1f1f1")
+          .style("fill-opacity",0.1)
+          .attr("d", area);
+
         svg.append("path")
           .datum([{customers: 0, gains: 0}, {customers: 100, gains: 100}])
           .attr("class", "baseline")
@@ -152,39 +171,29 @@
           .attr("y", -1)
           .attr("height", height);
         brushg.selectAll(".resize.e")
-          .append("path")
-            .attr("d", resizePath);
+            .append("image")
+              .attr("width", 35)
+              .attr("height",35)
+              .attr("y",height/2.2)
+              .attr("x",-17)
+              .attr("xlink:href",'arrow_right.png');
 
         // Add a counter for % selected
-        brushg.selectAll(".resize.e").append('text')
-          .attr("dx", "0.6em")
-          .attr("dy", "42%")
-          .style("font-size","36px;")
-          .attr('class', 'count')
-          .text(Math.round(brush.extent()[1]) + '%');
-        });
-      
-
-      // Build a crazy svg handle thing
-        function resizePath(d) {
-          console.log()
-          var e = +(d == "e"),
-              x = e ? 1 : -1,
-              y = height / 3;
-          return "M" + (.5 * x) + "," + y
-              + "A6,6 0 0 " + e + " " + (6.5 * x) + "," + (y + 6)
-              + "V" + (2 * y - 6)
-              + "A6,6 0 0 " + e + " " + (.5 * x) + "," + (2 * y)
-              + "Z"
-            + "M" + (2.5 * x) + "," + (y + 8)
-            + "V" + (2 * y - 8)
-            + "M" + (4.5 * x) + "," + (y + 8)
-            + "V" + (2 * y - 8);
-      }
+        brushg.selectAll(".resize.e")
+          .append('text')
+            .attr("dx", "-145px")
+            .attr("dy", "-20px")
+            .attr("transform", "rotate(-90)")
+            .style("text-anchor", "middle")
+            .attr('class', 'count')
+            .text(Math.round(brush.extent()[1]));
+      });
 
       function brushed() {
         d3.select('text.count')
-          .text(Math.round(brush.extent()[1]) + '%');
+          .text(Math.round(brush.extent()[1]));
+        var ext = brush.extent();
+        mask.reveal(ext);
         //This would be a good spot to hand off the extent
       }
 

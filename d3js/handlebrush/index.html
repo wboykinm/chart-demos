@@ -112,13 +112,33 @@ d3.selectAll('.brushControl').append('text')
 var color = d3.scale.ordinal()
     .range(['#e9d362','#f0f1f1']);
 
+/*var gradient = svg.append("svg:defs")
+  .append("svg:linearGradient")
+    .attr("id", "gradient")
+    .attr("x1", "0%")
+    .attr("y1", "0%")
+    .attr("x2", "100%")
+    .attr("y2", "100%")
+    .attr("spreadMethod", "pad");
+
+gradient.append("svg:stop")
+    .attr("offset", "0%")
+    .attr("stop-color", "#0c0")
+    .attr("stop-opacity", 1);
+
+gradient.append("svg:stop")
+    .attr("offset", "100%")
+    .attr("stop-color", "#c00")
+    .attr("stop-opacity", 1);*/
+
+
 // define the chart type and dimensions
 var pie = d3.layout.pie()
     .sort(null);
 
 var arc = d3.svg.arc()
     .innerRadius(radius - 100)
-    .outerRadius(radius - 60);
+    .outerRadius(radius - 40);
 
 // append the pie chart to the already-defined brush svg
 var svg = d3.select(".brushControl").append("svg")
