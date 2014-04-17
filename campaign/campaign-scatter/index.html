@@ -16,6 +16,17 @@
     shape-rendering: crispEdges;
   }
 
+  .campaignspots {
+    fill:#a495d0;
+    fill-opacity:0.8;
+    stroke:#333;
+    stroke-width:1.2;
+  }
+  .campaignspots:hover {
+    fill-opacity:0.3;
+    stroke-width:2;
+  }
+
   </style>
 </head>
 <body>
@@ -23,37 +34,45 @@
 <script>
 
 //Width and height
-  var w = 960;
-  var h = 350;
-  var padding = 30;
+  var width = 960;
+  var height = 350;
+  var padding = 50;
 
-  var dataset;
+  var commasFormatter = d3.format(",.0f");
 
-  d3.csv("../campaigns.csv", function(data) {
+  //Create SVG element
+  var svg = d3.select("body")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+  // Think of this as the update function:
+  d3.csv("campaigns.csv", function(data) {
+    // This parser may not be necessary if the endpoint delivers float format
     data.forEach(function(d) {
       d.cost = parseFloat(d.cost);
       d.response = parseFloat(d.response);
       d.magnitude = parseFloat(d.magnitude);
     });
-    dataset = data;
   //Create scale functions
   var xScale = d3.scale.linear()
-             .domain([0, d3.max(dataset, function(d) { return d.cost[0]; })])
-             .range([padding, w - padding * 2]);
+             .domain([0, d3.max(data, function(d) { return d.cost; })])
+             .range([padding, width - padding * 2]);
 
   var yScale = d3.scale.linear()
-             .domain([0, d3.max(dataset, function(d) { return d.response[1]; })])
-             .range([h - padding, padding]);
+             .domain([0, d3.max(data, function(d) { return d.response; })])
+             .range([height - padding, padding]);
 
   var rScale = d3.scale.linear()
-             .domain([0, d3.max(dataset, function(d) { return d.magnitude[1]; })])
-             .range([2, 5]);
+             .domain([0, d3.max(data, function(d) { return d.magnitude; })])
+             .range([3, 30]);
 
   //Define X axis
   var xAxis = d3.svg.axis()
             .scale(xScale)
             .orient("bottom")
-            .ticks(5);
+            .ticks(5)
+            .tickFormat(function(d) { return "$" + commasFormatter(d); });
 
   //Define Y axis
   var yAxis = d3.svg.axis()
@@ -61,38 +80,48 @@
             .orient("left")
             .ticks(5);
 
-  //Create SVG element
-  var svg = d3.select("body")
-        .append("svg")
-        .attr("width", w)
-        .attr("height", h);
-
   //Create circles
   svg.selectAll("circle")
-     .data(dataset)
+     .data(data)
      .enter()
      .append("circle")
-     .attr("cx", function(d) {
-        return xScale(d.cost[0]);
-     })
-     .attr("cy", function(d) {
-        return yScale(d.response[0]);
-     })
-     .attr("r", function(d) {
-        return rScale(d.magnitude[0]);
-     });
+       .attr("class","campaignspots")
+       .attr("cx", function(d) {
+          return xScale(d.cost);
+       })
+       .attr("cy", function(d) {
+          return yScale(d.response);
+       })
+       .attr("r", function(d) {
+          return rScale(d.magnitude);
+       });
 
   //Create X axis
   svg.append("g")
     .attr("class", "axis")
-    .attr("transform", "translate(0," + (h - padding) + ")")
-    .call(xAxis);
+    .attr("transform", "translate(0," + (height - padding) + ")")
+    .call(xAxis)
+      .append("text")
+        .attr("class","axes")
+        .attr("y", 40)
+        .attr("x", width/2 - padding)
+        .style("text-anchor", "middle")
+        .style("font-size", "13px;")
+        .text("Campaign Cost");
 
   //Create Y axis
   svg.append("g")
     .attr("class", "axis")
     .attr("transform", "translate(" + padding + ",0)")
-    .call(yAxis);
+    .call(yAxis)
+    .append("text")
+      .attr("class","axes")
+      .attr("y", -35)
+      .attr("x", -height/2)
+      .attr("transform", "rotate(-90)")
+      .style("text-anchor", "middle")
+      .style("font-size", "13px;")
+      .text("Response Rate");
 });
 
 </script>

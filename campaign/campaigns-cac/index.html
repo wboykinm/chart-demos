@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+  <link href="http://fonts.googleapis.com/css?family=Source+Sans+Pro:300" rel="stylesheet" type="text/css">
+  <style>
+
+  body, svg {
+    font-family: "Source Sans Pro", sans-serif;
+    font-weight: 300;
+    font-size: 14px;
+  }
+
+  .axis path,
+	.axis line {
+		fill: none;
+		stroke: black;
+		shape-rendering: crispEdges;
+	}
+  </style>
+</head>
+	<body>
+		<div id='element1'></div>
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script type="text/javascript">
+		var commasFormatter = d3.format(",.0f");
+		//Width and height
+    var width = 960;
+    var height = 200;
+    var padding = 10;
+    //Data
+    d3.csv('campaigns.csv', function(data) {
+    // This parser may not be necessary if the endpoint delivers float format
+	    data.forEach(function(d) {
+	      d.cost = parseFloat(d.cost);
+	      d.response = parseFloat(d.response);
+	      d.magnitude = parseFloat(d.magnitude);
+	    });
+
+	  var xScale = d3.scale.linear()
+			.domain([0, d3.max(data, function(d) {
+			  return d.cac[0]; 
+			})])
+		  .range([padding, width - padding * 2]);
+		  console.log(d3.extent(data, function(d) { 
+		  	return d.magnitude; 
+		  }));
+		var rScale = d3.scale.linear()
+		  .domain([0, d3.max(data, function(d) { 
+		  	return d.magnitude; 
+		  })])
+		  .range([2, 40]);
+
+		var xAxis = d3.svg.axis()
+		  .scale(xScale)
+		  .orient("bottom")
+		  //.ticks(4)
+			.tickValues([0, d3.max(data, function(d) {
+				console.log(d.cac)
+			  return d.cac; 
+			})])
+		  .tickFormat(function(d) { return "$" + commasFormatter(d); });
+
+    //Create SVG element
+    var svg = d3.select("#element1")
+    	.append("svg")
+    	.attr("width", width)
+    	.attr("height", height);
+
+    var circles = svg.selectAll("circle")
+    	.data(data)
+    	.enter()
+    	.append("circle");
+
+    circles
+	    .attr("cx", function(d, i) {
+	      return xScale(d.cac / width);
+	    })
+	    .attr("cy", height/2)
+	    .attr("r", function(d) {
+	      return rScale(d.magnitude) + 10;
+	    })
+	    .attr("fill", "#e2dea4")
+	    .attr("fill-opacity", "0.8")
+	    .attr("stroke", "#49ada6")
+	    .attr("stroke-width", 2);
+
+		svg.selectAll("text")
+	    .data(data)
+	    .enter()
+	    .append("text")
+	      .text(function(d) {
+	   			return d.cac;
+	   		})
+	   	.attr("x", function(d) {
+	   		return xScale(d.cac[0]);
+	   	});
+			
+		//Create X axis
+		svg.append("g")
+			.attr("class", "axis")
+			.attr("transform", "translate(0," + (height / 2) + ")")
+			.call(xAxis);
+
+	});
+
+
+		</script>
+	</body>
+</html>
