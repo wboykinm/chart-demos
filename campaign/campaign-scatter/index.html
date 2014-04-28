@@ -10,6 +10,17 @@
     font-size: 13px;
   }
 
+  .compareLegend text {
+    fill:#777;
+    font-size: 11px;
+  }
+
+  .compareLegend circle {
+    fill-opacity:0;
+    stroke:#777;
+    stroke-width:1.2;
+  }
+
   .axis path, .axis line {
     fill: none;
     stroke: #000;
@@ -34,8 +45,8 @@
 <script>
 
 //Width and height
-  var width = 960;
-  var height = 350;
+  var width = 460;
+  var height = 360;
   var padding = 50;
 
   var commasFormatter = d3.format(",.0f");
@@ -56,16 +67,18 @@
     });
   //Create scale functions
   var xScale = d3.scale.linear()
-             .domain([0, d3.max(data, function(d) { return d.cost; })])
-             .range([padding, width - padding * 2]);
+     .domain([0, d3.max(data, function(d) { return d.cost; })])
+     .range([padding, width - padding * 2]);
 
   var yScale = d3.scale.linear()
-             .domain([0, d3.max(data, function(d) { return d.response; })])
-             .range([height - padding, padding]);
+     .domain([0, d3.max(data, function(d) { return d.response; })])
+     .range([height - padding, padding]);
 
   var rScale = d3.scale.linear()
-             .domain([0, d3.max(data, function(d) { return d.magnitude; })])
-             .range([3, 30]);
+     .domain([0, d3.max(data, function(d) { return d.magnitude; })])
+     .range([3, 30]);
+
+
 
   //Define X axis
   var xAxis = d3.svg.axis()
@@ -122,6 +135,41 @@
       .style("text-anchor", "middle")
       .style("font-size", "13px;")
       .text("Response Rate");
+
+  var compareLegend = svg.append("g")
+    .attr("class", "compareLegend")
+    .attr("transform", "translate(" + (width-(padding*2)-40) + "," + (padding+30) + ")")
+    .data(data)
+    .append("circle")
+      .attr("cx",10)
+      .attr("cy",10)
+      .attr("r",30)
+    svg.selectAll(".compareLegend")
+      .append("circle")
+        .attr("cx",10)
+        .attr("cy",-10)
+        .attr("r",10)
+    svg.selectAll(".compareLegend")
+      .append("circle")
+        .attr("cx",10)
+        .attr("cy",-0)
+        .attr("r",20)
+
+    svg.selectAll(".compareLegend")
+      .append("text")
+        .attr("class","legendtext")
+        .attr("y", 55)
+        .attr("x", 10)
+        .style("text-anchor", "middle")
+        .text("Large Magnitude");
+    svg.selectAll(".compareLegend")
+      .append("text")
+        .attr("class","legendtext")
+        .attr("y", -30)
+        .attr("x", 10)
+        .style("text-anchor", "middle")
+        .text("Small Magnitude");
+
 });
 
 </script>
